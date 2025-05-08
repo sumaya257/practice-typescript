@@ -1,97 +1,131 @@
 ## Differences Between Interfaces and Types in TypeScript
-In TypeScript, both interfaces and types allow you to define custom types for objects, but there are some important differences between them. Here is the differences,
 
-1. Syntax:
-Interfaces are declared using the interface keyword:
- interface Person {
+In TypeScript, both `interface` and `type` can be used to define the structure of data. However, there are important differences that influence when you should use one over the other.
+
+### # Syntax
+
+**Interface:**
+
+```ts
+interface Person {
   name: string;
   age: number;
 }
+```
 
-Types are declared using the type keyword:
+**Type:**
+
+```ts
 type Person = {
   name: string;
   age: number;
-}
+};
+```
 
-While both are similar in how they allow you to define an object’s structure, the syntax is different.
+Though they define the structure similarly, the syntax is different.
 
-2. Extending or Merging:
-Interfaces can be extended using the extends keyword or even merged if you declare them with the same name:
+### # Extending or Merging
+
+**Interface:** Supports `extends` and declaration merging.
+
+```ts
 interface Person {
   name: string;
   age: number;
 }
 
 interface Person {
-  email: string;  // merging with the 1st interface
+  email: string;
 }
 
 const person: Person = {
-  name: "Alice",
-  age: 25,
-  email: "alice@example.com"
+  name: "sumaya",
+  age: 24,
+  email: "sumaya@gmail.com"
 };
-Types cannot be merged. Once you define a type, it is fixed. However, you can extend it using intersection types:
+```
+
+**Type:** Cannot be merged, but can be extended using intersections.
+
+```ts
 type Person = {
   name: string;
   age: number;
 };
+
 type Contact = Person & { email: string };
+
 const contact: Contact = {
-  name: "Alice",
-  age: 25,
-  email: "alice@example.com"
+  name: "sumaya",
+  age: 24,
+  email: "sumaya@example.com"
 };
+```
 
-3. Use Cases:
-Interfaces are mainly used when you want to define the structure of an object or class. They are better for OOP and class-based models.
+### # Use Cases
 
-Types are more versatile and can be used not only for object shapes but also for primitives, unions, intersections, and tuples. They offer more flexibility compared to interfaces.
+* **Interfaces** are preferred in object-oriented design and when defining the shape of classes or objects.
+* **Types** are more versatile and can define unions, intersections, tuples, and primitive types.
 
-4. Union Types:
-Types can represent union types, meaning they can accept multiple different types:
+### # Union Types
+
+**Type:**
+
+```ts
 type ID = string | number;
+```
 
-Interfaces cannot directly represent union types. If you want to create union types with interfaces, you would need to use a workaround, such as using a type with interface in an intersection.
+**Interface:** Cannot directly define union types.
 
-5. Compatibility:
-Interfaces and types are generally compatible with each other. In most cases, an interface and a type can be used interchangeably for object-like structures. However, interfaces are more suited for extension and declaration merging.
+### # Compatibility
 
-Types offer greater flexibility, allowing for the combination of different types into one, such as unions or intersections.
+* Interfaces and types can often be used interchangeably.
+* Interfaces are better for extension and merging.
+* Types are more flexible for complex combinations.
 
-6. Performance:
-There is no significant performance difference between interfaces and types during runtime. But using declaration merging, interfaces can be more efficient in certain cases because TypeScript handles them as separate declarations.
+### # Performance
 
-In Summary:
-Use interfaces when working with object-oriented designs or when you want to take advantage of features like declaration merging and extension.
+There's no runtime performance difference. But interfaces may have slight compile-time benefits due to merging.
 
-Use types when you need more flexibility, such as defining union types, intersection types, or tuple types.
+### # Summary
 
+* Use **interface** for OOP style, classes, and merging.
+* Use **type** when you need unions, intersections, or more flexibility.
 
-## What is the use of the keyof keyword in TypeScript?
-The keyof keyword in TypeScript is used to get the keys (property names) of an object as a type. It returns a union type made up of the object’s keys. This is useful when you want to create type-safe, reusable, and generic functions or types that work with object properties.
+---
 
-Why is it useful?
-It prevents you from using wrong property names by mistake.
-It improves code safety and auto-completion in editors.
-It’s helpful when building functions that should work with dynamic keys.
+## What is the use of the `keyof` keyword in TypeScript?
 
-Example:
+The `keyof` keyword is used to extract the keys of an object type as a union of string literal types. It helps ensure you’re using valid property names and makes your code more type-safe and generic.
+
+### # Why use `keyof`?
+
+* Prevents mistakes by enforcing valid keys.
+* Improves auto-completion.
+* Great for building reusable and flexible functions.
+
+### # Example
+
+```ts
 type Person = {
   name: string;
   age: number;
 };
-type PersonKeys = keyof Person;
-// PersonKeys = "name" | "age"
-Now you can use PersonKeys as a type that allows only "name" or "age" — nothing else.
 
-Using keyof in a function
+type PersonKeys = keyof Person;  // "name" | "age"
+```
+
+Now `PersonKeys` is a type that allows only `"name"` or `"age"`.
+
+### # Using `keyof` in a function
+
+```ts
 function getValue<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key];
 }
 
-const user = { name: "Alice", age: 25 };
+const user = { name: "sumu", age: 24 };
 const value = getValue(user, "name"); // returns "Alice"
+```
 
-This function only allows valid keys from the object, thanks to keyof.
+Thanks to `keyof`, only valid keys from the object can be passed to the function, making it safer and more reliable.
